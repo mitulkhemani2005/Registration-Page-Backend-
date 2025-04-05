@@ -13,17 +13,18 @@ router.post('/',async (req,res)=>{
     const submittedData = req.body;
     const RecEmail = submittedData.UserMail;
     const RecPass = submittedData.UserPass;
+    if (!RecEmail || !RecPass){return res.status(400).send(`Empty Fields`)};
     try{
-        const data = await UserDatabase.find({UserMail: RecEmail});
+        const data = await UserDatabase.findOne({UserMail: RecEmail});
         console.log(RecEmail)
-        if (data.length==0){
-            res.send(`User Data Not Found`)
+        if (!data){
+            return res.send(`User Data Not Found`);
         }
-        else if (data[0].UserPass==RecPass){
-            res.send(`User Login Successful`);
+        else if (data.UserPass==RecPass){
+            return res.send(`User Login Successful`);
         }
-        else if (data[0].UserPass!=RecPass){
-            res.send(`Wrong Credintials`);
+        else if (data.UserPass!=RecPass){
+            return res.send(`Wrong Credintials`);
         }
     }
     catch(err){
